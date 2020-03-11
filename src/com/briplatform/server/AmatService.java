@@ -6,6 +6,12 @@ import java.net.Socket;
 import com.briplatform.server.resources.BRiService;
 import com.briplatform.server.resources.Registry;
 
+/**
+ * This class is the amateur service which the programmer client app
+ * connects to.
+ * 
+ * @author Lucas Pinard
+ */
 public class AmatService extends BRiService {
 
 	public AmatService(Socket client) {

@@ -160,16 +160,32 @@ public class Programmer implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
+	/**
+	 * Tries to add the service to this programmer's installed services from
+	 * his FTP directory.
+	 * @param name the name of the service to add
+	 * @throws ClassNotFoundException if no service can be found.
+	 * @throws NotBRiNormalizedException if the service is does not respect the
+	 * BRiPlatform standard.
+	 */
 	public void addService(String name) 
 			throws ClassNotFoundException, NotBRiNormalizedException {
 		URLClassLoader loader = new URLClassLoader(new URL[] {FTPLocation});
 		Class<?> service = loader.loadClass(username+"."+name);
-		BRiService.verifyBRiIntegrity(service);
+		BRiService.verifyBRiValidity(service);
 		services.put(name, (Class<? extends BRiService>) service);
 		try {loader.close();} catch (IOException e) {e.printStackTrace();}
 	}
 
 	@SuppressWarnings("unchecked")
+	/**
+	 * Tries to add the service to this programmer's installed services from a
+	 * JAR file of same name located in this programmer's FTP directory.
+	 * @param name the name of the service to add
+	 * @throws ClassNotFoundException if no service can be found.
+	 * @throws NotBRiNormalizedException if the service is does not respect the
+	 * BRiPlatform standard.
+	 */
 	public void addServiceFromJAR(String name) 
 			throws ClassNotFoundException, NotBRiNormalizedException, 
 			MalformedURLException {
@@ -177,20 +193,34 @@ public class Programmer implements Serializable {
 				new URL[] {new URL(FTPLocation, name+".jar")}
 				);
 		Class<?> service = loader.loadClass(username+"."+name);
-		BRiService.verifyBRiIntegrity(service);
+		BRiService.verifyBRiValidity(service);
 		services.put(name, (Class<? extends BRiService>) service);
 		try {loader.close();} catch (IOException e) {e.printStackTrace();}
 	}
 
+	/**
+	 * Uninstalls a service from this programmer's list of services.
+	 * @param name the name of the service to remove.
+	 */
 	public void removeService(String name) {
 		deactivateService(name);
 		services.remove(name);
 	}
 
+	/**
+	 * Activate a service by pushing it into the BRiPlatform registry.
+	 * @param name the name of the service to activate.
+	 * @see Registry
+	 */
 	public void activateService(String name) {
 		Registry.getInstance().addService(services.get(name));
 	}
 
+	/**
+	 * Deactivate a service by removing it from the BRiPlatform registry.
+	 * @param name the name of the service to remove.
+	 * @see Registry
+	 */
 	public void deactivateService(String name) {
 		Registry.getInstance().removeService(services.get(name));
 	}

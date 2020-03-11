@@ -9,18 +9,27 @@ import com.briplatform.server.resources.BRiService;
 import com.briplatform.server.resources.Programmer;
 import com.briplatform.server.resources.Registry;
 
+/**
+ * This class is the programmer service which the programmer client app
+ * connects to. It provides a handful of commands to manage the programmer's
+ * account and his installed services.
+ * 
+ * @author Lucas Pinard
+ */
 public class ProgService extends BRiService {
 
+	/** Shortcut for the {@link System#lineSeparator()}. */
 	private static final String nl = System.lineSeparator();
 
 	static {
 		try {
-			BRiService.verifyBRiIntegrity(ProgService.class);
+			BRiService.verifyBRiValidity(ProgService.class);
 		} catch (NotBRiNormalizedException e) {
 			throw new RuntimeException(e);
 		}
 	}
 
+	/** Reference to the connected programmer. */
 	private Programmer connected = null;
 
 	public ProgService(Socket client) {
